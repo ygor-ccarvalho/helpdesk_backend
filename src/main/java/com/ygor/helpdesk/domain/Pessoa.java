@@ -16,8 +16,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import org.hibernate.annotations.CollectionType;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ygor.helpdesk.domain.enums.Perfil;
 
