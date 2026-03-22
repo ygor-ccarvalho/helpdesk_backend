@@ -1,4 +1,4 @@
-package com.ygor.helpdesk.helpdesk_repositories;
+package com.ygor.helpdesk.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
