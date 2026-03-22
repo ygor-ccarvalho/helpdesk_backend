@@ -3,7 +3,6 @@ package com.ygor.helpdesk.repositories;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.ygor.helpdesk.domain.Pessoa;
-import java.util.List;
 import java.util.Optional;
 
 
