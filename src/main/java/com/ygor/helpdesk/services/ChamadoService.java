@@ -7,6 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ygor.helpdesk.domain.Chamado;
+import com.ygor.helpdesk.domain.Cliente;
+import com.ygor.helpdesk.domain.Tecnico;
+import com.ygor.helpdesk.domain.dtos.ChamadoDTO;
+import com.ygor.helpdesk.domain.enums.Prioridade;
+import com.ygor.helpdesk.domain.enums.Status;
 import com.ygor.helpdesk.repositories.ChamadoRepository;
 import com.ygor.helpdesk.services.exceptions.ObjectnotFoundException;
 
@@ -15,7 +20,10 @@ public class ChamadoService {
 
 	@Autowired
 	private ChamadoRepository repository;
-	
+	@Autowired
+	private TecnicoService tecnicoService;
+	@Autowired
+	private ClienteService clienteService;
 
 	public Chamado findById(Integer id) {
 		Optional<Chamado> obj = repository.findById(id);
@@ -26,5 +34,29 @@ public class ChamadoService {
 		return repository.findAll();
 	}
 
+	public Chamado create(ChamadoDTO objDTO) {
+		return repository.save(newChamado(objDTO));
+	}
+
 	
+	private Chamado newChamado(ChamadoDTO obj) {
+		Tecnico tecnico = tecnicoService.findById(obj.getTecnico());
+		Cliente cliente = clienteService.findById(obj.getCliente());
+		
+		Chamado chamado = new Chamado();
+		if(obj.getId() != null) {
+			chamado.setId(obj.getId());
+		}
+		
+		chamado.setTecnico(tecnico);
+		chamado.setCliente(cliente);
+		chamado.setPrioridade(Prioridade.toEnum(obj.getPrioridade()));
+		chamado.setStatus(Status.toEnum(obj.getStatus()));
+		chamado.setTitulo(obj.getTitulo());
+		chamado.setObservacoes(obj.getObservacoes());
+		
+		return chamado;
+	}
+
+
 }
