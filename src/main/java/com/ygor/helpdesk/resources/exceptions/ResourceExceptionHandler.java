@@ -1,6 +1,6 @@
 package com.ygor.helpdesk.resources.exceptions;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,9 +43,9 @@ public class ResourceExceptionHandler {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
 	}
 	
-	@ExceptionHandler(javax.validation.ConstraintViolationException.class)
+	@ExceptionHandler(jakarta.validation.ConstraintViolationException.class)
 	public ResponseEntity<ValidationError> constraintViolationException(
-	        javax.validation.ConstraintViolationException ex,
+	        jakarta.validation.ConstraintViolationException ex,
 	        HttpServletRequest request) {
 
 	    ValidationError errors = new ValidationError(
