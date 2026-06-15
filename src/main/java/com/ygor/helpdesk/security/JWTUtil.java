@@ -17,9 +17,10 @@ public class JWTUtil {
 	@Value("${jwt.secret}")
 	private String secret;
 
-	public String generateToken(String email) {
+	public String generateToken(String email, String nome) {
 		return Jwts.builder()
 				.setSubject(email)
+				.claim("nome", nome)
 				.setExpiration(new Date(System.currentTimeMillis() + expiration))
 				.signWith(SignatureAlgorithm.HS512, secret.getBytes())
 				.compact();

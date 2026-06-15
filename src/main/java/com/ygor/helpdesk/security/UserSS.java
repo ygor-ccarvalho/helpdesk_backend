@@ -16,15 +16,17 @@ public class UserSS implements UserDetails{
 	private Integer id;
 	private String email;
 	private String senha;
+	private String nome;
 	private Collection<? extends GrantedAuthority> authorities;
 
 	
 	
-	public UserSS(Integer id, String email, String senha, Set<Perfil> perfis) {
+	public UserSS(Integer id, String email, String nome, String senha, Set<Perfil> perfis) {
 		super();
 		this.id = id;
 		this.email = email;
 		this.senha = senha;
+		this.nome = nome;
 		this.authorities = perfis.stream().map(x -> new SimpleGrantedAuthority(x.getDescricao())).collect(Collectors.toSet());
 	}
 
@@ -46,6 +48,9 @@ public class UserSS implements UserDetails{
 	public String getUsername() {
 		return email;
 	}
+	
+	
+	public String getNome() { return nome; }
 
 	@Override
 	public boolean isAccountNonExpired() {
