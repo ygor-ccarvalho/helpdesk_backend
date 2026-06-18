@@ -29,8 +29,8 @@ public class Chamado implements Serializable{
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	private LocalDate dataFechamento;
 	
-	private Prioridade prioridade;
-	private Status status;
+	private Integer prioridade;
+	private Integer status;
 	private String titulo;
 	private String observacoes;
 	
@@ -51,8 +51,8 @@ public class Chamado implements Serializable{
 			Cliente cliente) {
 		super();
 		this.id = id;
-		this.prioridade = prioridade;
-		this.status = status;
+		this.prioridade = prioridade.getCodigo();
+		this.status = status.getCodigo();
 		this.titulo = titulo;
 		this.observacoes = observacoes;
 		this.tecnico = tecnico;
@@ -84,19 +84,19 @@ public class Chamado implements Serializable{
 	}
 
 	public Prioridade getPrioridade() {
-		return prioridade;
+		return Prioridade.toEnum(this.prioridade);
 	}
 
 	public void setPrioridade(Prioridade prioridade) {
-		this.prioridade = prioridade;
+		this.prioridade = prioridade.getCodigo();
 	}
 
 	public Status getStatus() {
-		return status;
+		return Status.toEnum(this.status);
 	}
 
 	public void setStatus(Status status) {
-		this.status = status;
+		this.status = status.getCodigo();
 	}
 
 	public String getTitulo() {

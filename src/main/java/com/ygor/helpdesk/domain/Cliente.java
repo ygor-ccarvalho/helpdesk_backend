@@ -12,14 +12,12 @@ import com.ygor.helpdesk.domain.dtos.ClienteDTO;
 import com.ygor.helpdesk.domain.enums.Perfil;
 
 @Entity
-
 public class Cliente extends Pessoa{
 
 	private static final long serialVersionUID = 1L;
 	
 	@JsonIgnore
 	@OneToMany(mappedBy = "cliente")
-	
 	private List<Chamado> chamados = new ArrayList<>();
 
 	public Cliente() {
@@ -35,8 +33,8 @@ public class Cliente extends Pessoa{
 		this.email = obj.getEmail();
 		this.senha = obj.getSenha();
 		this.perfis = obj.getPerfis().stream().map(x -> x.getCodigo()).collect(Collectors.toSet());
-		
 		this.dataCriacao = obj.getDataCriacao();
+		addPerfil(Perfil.CLIENTE);
 	}
 
 	public Cliente(Integer id, String nome, String cpf, String email, String senha) {

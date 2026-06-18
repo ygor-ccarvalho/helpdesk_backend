@@ -23,12 +23,12 @@ public class Tecnico extends Pessoa{
 
 	public Tecnico() {
 		super();
-		addPerfil(Perfil.CLIENTE);
+		addPerfil(Perfil.TECNICO);
 	}
 
 	public Tecnico(Integer id, String nome, String cpf, String email, String senha) {
 		super(id, nome, cpf, email, senha);
-		addPerfil(Perfil.CLIENTE);
+		addPerfil(Perfil.TECNICO);
 	}
 
 	public Tecnico(TecnicoDTO obj) {
@@ -38,9 +38,9 @@ public class Tecnico extends Pessoa{
 		this.cpf = obj.getCpf();
 		this.email = obj.getEmail();
 		this.senha = obj.getSenha();
-		this.perfis = obj.getPerfis().stream().map(x -> x.getCodigo()).collect(Collectors.toSet());
-		
+		this.perfis = obj.getPerfis().stream().map(x -> x.getCodigo()).collect(Collectors.toSet()); 
 		this.dataCriacao = obj.getDataCriacao();
+		addPerfil(Perfil.TECNICO);
 	}
 	
 	
