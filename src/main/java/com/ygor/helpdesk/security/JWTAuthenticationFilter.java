@@ -38,9 +38,10 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 			Authentication authentication = authenticationManager.authenticate(authenticationToken);
 			return authentication;
 
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+		} catch (IOException e) {
+		    throw new RuntimeException("Falha ao ler credenciais", e);
 		}
+
 	}
 
 	@Override
