@@ -13,11 +13,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
 	private JWTUtil jwtUtil;
 	private UserDetailsService userDetailsService;
+	private static final Logger log = LoggerFactory.getLogger(JWTAuthorizationFilter.class);
 
 	public JWTAuthorizationFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil,
 			UserDetailsService userDetailsService) {
@@ -44,7 +48,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 		if (jwtUtil.tokenValido(token)) {
 			String username = jwtUtil.getUsername(token);
 			UserDetails details = userDetailsService.loadUserByUsername(username);
-			System.out.println("Authorities: " + details.getAuthorities());
+			log.debug("Authorities: {}", details.getAuthorities());
 			
 			return new UsernamePasswordAuthenticationToken(details.getUsername(), null, details.getAuthorities());
 		}
