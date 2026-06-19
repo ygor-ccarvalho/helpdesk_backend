@@ -16,6 +16,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ygor.helpdesk.domain.dtos.CredenciaisDTO;
+import com.ygor.helpdesk.resources.exceptions.StandardError;
+
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -55,21 +57,25 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
 	@Override
 	protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
-			AuthenticationException failed) throws IOException, ServletException {
+	        AuthenticationException failed) throws IOException, ServletException {
 
-	response.setStatus(401);
-	response.setContentType("application/json");
-	response.getWriter().append(json());
+	    response.setStatus(401);
+	    response.setContentType("application/json");
+	    response.getWriter().append(json());
 	}
 
-	private CharSequence json() {
-		long date = new java.util.Date().getTime();
-		return "{"
-				+ "\"timestamp\": " + date + ", " 
-				+ "\"status\": 401, "
-				+ "\"error\": \"Não autorizado\", "
-				+ "\"message\": \"Email ou senha inválidos\", "
-				+ "\"path\": \"/login\"}";
+	private CharSequence json() throws IOException {
+	    long date = System.currentTimeMillis();
+
+	    StandardError error = new StandardError(
+	            date,                            
+	            401,                             
+	            "Não autorizado",                
+	            "Email ou senha inválidos",      
+	            "/login"                         
+	    );
+
+	    return new ObjectMapper().writeValueAsString(error);
+	}
 	}
 
-}
