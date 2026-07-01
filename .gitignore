@@ -21,6 +21,7 @@ release.properties
 .project
 .classpath
 .settings/
+.factorypath
 
 # OS
 .DS_Store
