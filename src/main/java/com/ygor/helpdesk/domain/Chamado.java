@@ -2,7 +2,6 @@ package com.ygor.helpdesk.domain;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Objects;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,139 +14,71 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ygor.helpdesk.domain.enums.Prioridade;
 import com.ygor.helpdesk.domain.enums.Status;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+
 @Entity
-public class Chamado implements Serializable{
-	private static final long serialVersionUID = 1L;
-	
-	@Id
-	@GeneratedValue (strategy = GenerationType.IDENTITY)
-	private Integer id;
-	
-	@JsonFormat(pattern = "dd/MM/yyyy")
-	private  LocalDate dataAbertura = LocalDate.now();
+@Getter
+@Setter
+@EqualsAndHashCode(of = "id")
+public class Chamado implements Serializable {
 
-	@JsonFormat(pattern = "dd/MM/yyyy")
-	private LocalDate dataFechamento;
-	
-	private Integer prioridade;
-	private Integer status;
-	private String titulo;
-	private String observacoes;
-	
-	@ManyToOne
-	@JoinColumn(name = "tecnico_id" )
-	private Tecnico tecnico;
-	
-	@ManyToOne
-	@JoinColumn(name = "cliente_id")
-	private Cliente cliente;
-	
-	
-	public Chamado() {
-		super();
-	}
-	
-	public Chamado(Integer id, Prioridade prioridade, Status status, String titulo, String observacoes, Tecnico tecnico,
-			Cliente cliente) {
-		super();
-		this.id = id;
-		this.prioridade = prioridade.getCodigo();
-		this.status = status.getCodigo();
-		this.titulo = titulo;
-		this.observacoes = observacoes;
-		this.tecnico = tecnico;
-		this.cliente = cliente;
-	}
+    private static final long serialVersionUID = 1L;
 
-	public Integer getId() {
-		return id;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    private LocalDate dataAbertura = LocalDate.now();
 
-	public LocalDate getDataAbertura() {
-		return dataAbertura;
-	}
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    private LocalDate dataFechamento;
 
-	public void setDataAbertura(LocalDate dataAbertura) {
-		this.dataAbertura = dataAbertura;
-	}
+    private Integer prioridade;
+    private Integer status;
+    private String titulo;
+    private String observacoes;
 
-	public LocalDate getDataFechamento() {
-		return dataFechamento;
-	}
+    @ManyToOne
+    @JoinColumn(name = "tecnico_id")
+    private Tecnico tecnico;
 
-	public void setDataFechamento(LocalDate dataFechamento) {
-		this.dataFechamento = dataFechamento;
-	}
+    @ManyToOne
+    @JoinColumn(name = "cliente_id")
+    private Cliente cliente;
 
-	public Prioridade getPrioridade() {
-		return Prioridade.toEnum(this.prioridade);
-	}
+    public Chamado() {
+        super();
+    }
 
-	public void setPrioridade(Prioridade prioridade) {
-		this.prioridade = prioridade.getCodigo();
-	}
+    public Chamado(Integer id, Prioridade prioridade, Status status, String titulo, String observacoes,
+                   Tecnico tecnico, Cliente cliente) {
+        super();
+        this.id = id;
+        this.prioridade = prioridade.getCodigo();
+        this.status = status.getCodigo();
+        this.titulo = titulo;
+        this.observacoes = observacoes;
+        this.tecnico = tecnico;
+        this.cliente = cliente;
+    }
 
-	public Status getStatus() {
-		return Status.toEnum(this.status);
-	}
+    // Getters/Setters customizados (conversão Integer <-> Enum) - Lombok não gera
+    public Prioridade getPrioridade() {
+        return Prioridade.toEnum(this.prioridade);
+    }
 
-	public void setStatus(Status status) {
-		this.status = status.getCodigo();
-	}
+    public void setPrioridade(Prioridade prioridade) {
+        this.prioridade = prioridade.getCodigo();
+    }
 
-	public String getTitulo() {
-		return titulo;
-	}
+    public Status getStatus() {
+        return Status.toEnum(this.status);
+    }
 
-	public void setTitulo(String titulo) {
-		this.titulo = titulo;
-	}
-
-	public String getObservacoes() {
-		return observacoes;
-	}
-
-	public void setObservacoes(String observacoes) {
-		this.observacoes = observacoes;
-	}
-
-	public Tecnico getTecnico() {
-		return tecnico;
-	}
-
-	public void setTecnico(Tecnico tecnico) {
-		this.tecnico = tecnico;
-	}
-
-	public Cliente getCliente() {
-		return cliente;
-	}
-
-	public void setCliente(Cliente cliente) {
-		this.cliente = cliente;
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(id);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Chamado other = (Chamado) obj;
-		return Objects.equals(id, other.id);
-	}
-	
-
-
+    public void setStatus(Status status) {
+        this.status = status.getCodigo();
+    }
 }
