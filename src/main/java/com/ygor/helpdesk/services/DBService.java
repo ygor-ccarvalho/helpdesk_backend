@@ -1,8 +1,7 @@
 package com.ygor.helpdesk.services;
 
-import java.util.Arrays;
+import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,21 +14,18 @@ import com.ygor.helpdesk.domain.enums.Status;
 import com.ygor.helpdesk.repositories.ChamadoRepository;
 import com.ygor.helpdesk.repositories.PessoaRepository;
 
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class DBService {
 
-	
-	@Autowired
-	private ChamadoRepository chamadoRepository;
-	@Autowired
-	private PessoaRepository pessoaRepository;
-	@Autowired
-	private BCryptPasswordEncoder encoder;
+	private final ChamadoRepository chamadoRepository;
+	private final PessoaRepository pessoaRepository;
+	private final BCryptPasswordEncoder encoder;
 
-	
 	public void instanciaDB() {
-		
+
 		Tecnico tec1 = new Tecnico(null, "Ygor Carvalho", "487.802.760-67", "ygor@mail.com", encoder.encode("123"));
 		tec1.addPerfil(Perfil.ADMIN);
 		Tecnico tec2 = new Tecnico(null, "Valdir Cezar", "550.482.150-95", "valdir@mail.com", encoder.encode("123"));
@@ -44,7 +40,7 @@ public class DBService {
 		Cliente cli3 = new Cliente(null, "Charles Darwin", "792.043.830-62", "darwin@mail.com", encoder.encode("123"));
 		Cliente cli4 = new Cliente(null, "Stephen Hawking", "177.409.680-30", "hawking@mail.com", encoder.encode("123"));
 		Cliente cli5 = new Cliente(null, "Max Planck", "081.399.300-83", "planck@mail.com", encoder.encode("123"));
- 
+
 		Chamado c1 = new Chamado(null, Prioridade.MEDIA, Status.ANDAMENTO, "Chamado 1", "Teste chamado 1", tec1, cli1);
 		Chamado c2 = new Chamado(null, Prioridade.ALTA, Status.ABERTO, "Chamado 2", "Teste chamado 2", tec1, cli2);
 		Chamado c3 = new Chamado(null, Prioridade.BAIXA, Status.ENCERRADO, "Chamado 3", "Teste chamado 3", tec2, cli3);
@@ -52,8 +48,7 @@ public class DBService {
 		Chamado c5 = new Chamado(null, Prioridade.MEDIA, Status.ANDAMENTO, "Chamado 5", "Teste chamado 5", tec2, cli1);
 		Chamado c6 = new Chamado(null, Prioridade.BAIXA, Status.ENCERRADO, "Chamado 7", "Teste chamado 6", tec1, cli5);
 
-		pessoaRepository.saveAll(Arrays.asList(tec1, tec2, tec3, tec4, tec5, tec6,  cli1, cli2, cli3, cli4, cli5));
-		chamadoRepository.saveAll(Arrays.asList(c1, c2, c3, c4, c5, c6));
+		pessoaRepository.saveAll(List.of(tec1, tec2, tec3, tec4, tec5, tec6, cli1, cli2, cli3, cli4, cli5));
+		chamadoRepository.saveAll(List.of(c1, c2, c3, c4, c5, c6));
 	}
-
 }
