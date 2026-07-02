@@ -1,8 +1,5 @@
 package com.ygor.helpdesk.services;
 
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -12,21 +9,19 @@ import com.ygor.helpdesk.domain.Pessoa;
 import com.ygor.helpdesk.repositories.PessoaRepository;
 import com.ygor.helpdesk.security.UserSS;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
-public class UserDetailsServicempl implements UserDetailsService{
-	
-	@Autowired
-	private PessoaRepository repository;
+@RequiredArgsConstructor
+public class UserDetailsServiceImpl implements UserDetailsService {
+
+	private final PessoaRepository repository;
 
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+		Pessoa user = repository.findByEmail(email)
+				.orElseThrow(() -> new UsernameNotFoundException(email));
 
-	Optional<Pessoa> user = repository.findByEmail(email);
-	if(user.isPresent()) {
-		return new UserSS(user.get().getId(), user.get().getEmail(), user.get().getNome(), user.get().getSenha(), user.get().getPerfis());
+		return new UserSS(user.getId(), user.getEmail(), user.getNome(), user.getSenha(), user.getPerfis());
 	}
-	throw new UsernameNotFoundException(email);
-	}
-	
-
 }
