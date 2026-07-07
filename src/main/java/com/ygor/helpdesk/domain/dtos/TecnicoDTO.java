@@ -7,7 +7,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.ygor.helpdesk.domain.Tecnico;
+import com.ygor.helpdesk.domain.dtos.groups.CreateGroup;
+import com.ygor.helpdesk.domain.dtos.groups.UpdateGroup;
 import com.ygor.helpdesk.domain.enums.Perfil;
 
 import jakarta.validation.constraints.NotNull;
@@ -21,17 +24,20 @@ public class TecnicoDTO implements Serializable {
 
 	protected Integer id;
 
-	@NotNull(message = "O campo nome é obrigatório")
+	@NotNull(groups = {CreateGroup.class, UpdateGroup.class}, message = "O campo nome é obrigatório")
 	protected String nome;
 
-	@NotNull(message = "O campo CPF é obrigatório")
+	@NotNull(groups = {CreateGroup.class, UpdateGroup.class}, message = "O campo CPF é obrigatório")
 	protected String cpf;
 
-	@NotNull(message = "O campo Email é obrigatório")
+	@NotNull(groups = {CreateGroup.class, UpdateGroup.class}, message = "O campo Email é obrigatório")
 	protected String email;
 
-	@NotNull(message = "O campo Senha é obrigatório")
+	@NotNull(groups = CreateGroup.class, message = "O campo Senha é obrigatório")
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	protected String senha;
+
+
 
 	protected Set<Integer> perfis = new HashSet<>();
 
@@ -47,7 +53,6 @@ public class TecnicoDTO implements Serializable {
 		this.nome = obj.getNome();
 		this.cpf = obj.getCpf();
 		this.email = obj.getEmail();
-		this.senha = obj.getSenha();
 		this.perfis = obj.getPerfis().stream().map(Perfil::getCodigo).collect(Collectors.toSet());
 		this.dataCriacao = obj.getDataCriacao();
 	}
