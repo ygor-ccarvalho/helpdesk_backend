@@ -24,13 +24,14 @@ public class ClienteService {
 	private final PessoaRepository pessoaRepository;
 	private final BCryptPasswordEncoder encoder;
 
-	public Cliente findById(Integer id) {
-		Optional<Cliente> obj = repository.findById(id);
-		return obj.orElseThrow(() -> new ObjectnotFoundException("Objeto não encontrado! Id: " + id));
+	public ClienteDTO findById(Integer id) {
+		return new ClienteDTO(buscarEntidade(id));
 	}
 
-	public List<Cliente> findAll() {
-		return repository.findAll();
+	public List<ClienteDTO> findAll() {
+		return repository.findAll().stream()
+				.map(ClienteDTO::new)
+				.toList();
 	}
 
 	public Cliente create(ClienteDTO objDTO) {
@@ -41,25 +42,35 @@ public class ClienteService {
 		return repository.save(newObj);
 	}
 
-	public Cliente update(Integer id, ClienteDTO objDTO) {
+	public ClienteDTO update(Integer id, ClienteDTO objDTO) {
 		objDTO.setId(id);
-		Cliente oldObj = findById(id);
-
-		if (!objDTO.getSenha().equals(oldObj.getSenha())) {
-			objDTO.setSenha(encoder.encode(objDTO.getSenha()));
-		}
+		Cliente oldObj = buscarEntidade(id);
 
 		validaPorCpfEEmail(objDTO);
-		oldObj = new Cliente(objDTO);
-		return repository.save(oldObj);
-	}
+
+        oldObj.setNome(objDTO.getNome());
+        oldObj.setCpf(objDTO.getCpf());
+        oldObj.setEmail(objDTO.getEmail());
+        
+        if (objDTO.getSenha() != null && !objDTO.getSenha().isBlank()
+                && !encoder.matches(objDTO.getSenha(), oldObj.getSenha())) {
+            oldObj.setSenha(encoder.encode(objDTO.getSenha()));
+        }
+
+        return new ClienteDTO(repository.save(oldObj));
+    }
 
 	public void delete(Integer id) {
-		Cliente obj = findById(id);
-		if (obj.getChamados().size() > 0) {
+		Cliente obj = buscarEntidade(id);
+		if (!obj.getChamados().isEmpty()) {
 			throw new DataIntegrityViolationException("O Cliente possui ordens de serviço e não pode ser deletado!");
 		}
 		repository.deleteById(id);
+	}
+
+	public Cliente buscarEntidade(Integer id) {
+		return repository.findById(id)
+				.orElseThrow(() -> new ObjectnotFoundException("Objeto não encontrado! Id: " + id));
 	}
 
 	private void validaPorCpfEEmail(ClienteDTO objDTO) {
@@ -74,4 +85,3 @@ public class ClienteService {
 		}
 	}
 }
-

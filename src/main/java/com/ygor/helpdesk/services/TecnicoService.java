@@ -1,6 +1,7 @@
 package com.ygor.helpdesk.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,15 +24,16 @@ public class TecnicoService {
     private final PessoaRepository pessoaRepository;
     private final BCryptPasswordEncoder encoder;
 
-    public Tecnico findById(Integer id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new ObjectnotFoundException("Objeto não encontrado! Id: " + id));
+    public TecnicoDTO findById(Integer id) {
+    	return new TecnicoDTO(buscarEntidade(id));
+  }
+    
+    public List<TecnicoDTO> findAll() {
+		return repository.findAll().stream()
+				.map(TecnicoDTO::new)
+				.toList();
     }
-
-    public List<Tecnico> findAll() {
-        return repository.findAll();
-    }
-
+     
     public Tecnico create(TecnicoDTO objDTO) {
         objDTO.setId(null);
         objDTO.setSenha(encoder.encode(objDTO.getSenha()));
@@ -40,40 +42,51 @@ public class TecnicoService {
         return repository.save(newObj);
     }
 
-    public Tecnico update(Integer id, TecnicoDTO objDTO) {
+    
+    public TecnicoDTO update(Integer id, TecnicoDTO objDTO) {
         objDTO.setId(id);
-        Tecnico oldObj = findById(id);
-
-        if (!encoder.matches(objDTO.getSenha(), oldObj.getSenha())) {
-            objDTO.setSenha(encoder.encode(objDTO.getSenha()));
-        } else {
-            objDTO.setSenha(oldObj.getSenha());
-        }
+        Tecnico oldObj = buscarEntidade(id);
 
         validaPorCpfEEmail(objDTO);
-        Tecnico newObj = new Tecnico(objDTO);
-        return repository.save(newObj);
+
+        oldObj.setNome(objDTO.getNome());
+        oldObj.setCpf(objDTO.getCpf());
+        oldObj.setEmail(objDTO.getEmail());
+        
+        if (objDTO.getSenha() != null && !objDTO.getSenha().isBlank()
+                && !encoder.matches(objDTO.getSenha(), oldObj.getSenha())) {
+            oldObj.setSenha(encoder.encode(objDTO.getSenha()));
+        }
+
+        return new TecnicoDTO(repository.save(oldObj));
     }
 
+
     public void delete(Integer id) {
-        Tecnico obj = findById(id);
+        Tecnico obj = buscarEntidade(id);
         if (!obj.getChamados().isEmpty()) {
             throw new DataIntegrityViolationException("O Técnico possui ordens de serviço e não pode ser deletado!");
         }
         repository.deleteById(id);
     }
+    
 
-    private void validaPorCpfEEmail(TecnicoDTO objDTO) {
-        pessoaRepository.findByCpf(objDTO.getCpf())
-                .filter(p -> !p.getId().equals(objDTO.getId()))
-                .ifPresent(p -> {
-                    throw new DataIntegrityViolationException("CPF já cadastrado no sistema!");
-                });
-
-        pessoaRepository.findByEmail(objDTO.getEmail())
-                .filter(p -> !p.getId().equals(objDTO.getId()))
-                .ifPresent(p -> {
-                    throw new DataIntegrityViolationException("E-mail já cadastrado no sistema!");
-                });
+    public Tecnico buscarEntidade(Integer id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ObjectnotFoundException("Objeto não encontrado! Id: " + id));
     }
+
+
+	private void validaPorCpfEEmail(TecnicoDTO objDTO) {
+		Optional<Pessoa> obj = pessoaRepository.findByCpf(objDTO.getCpf());
+		if (obj.isPresent() && !obj.get().getId().equals(objDTO.getId())) {
+			throw new DataIntegrityViolationException("CPF já cadastrado no sistema!");
+		}
+
+		obj = pessoaRepository.findByEmail(objDTO.getEmail());
+		if (obj.isPresent() && !obj.get().getId().equals(objDTO.getId())) {
+			throw new DataIntegrityViolationException("E-mail já cadastrado no sistema!");
+		}
+	}
 }
+

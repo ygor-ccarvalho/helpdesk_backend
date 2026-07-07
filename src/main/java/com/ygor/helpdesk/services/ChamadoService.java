@@ -45,8 +45,8 @@ public class ChamadoService {
 	}
 
 	private Chamado newChamado(ChamadoDTO obj) {
-		Tecnico tecnico = tecnicoService.findById(obj.getTecnico());
-		Cliente cliente = clienteService.findById(obj.getCliente());
+		Tecnico tecnico = tecnicoService.buscarEntidade(obj.getTecnico());
+		Cliente cliente = clienteService.buscarEntidade(obj.getCliente());
 
 		Chamado chamado = new Chamado();
 		if (obj.getId() != null) {
